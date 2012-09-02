@@ -1,0 +1,38 @@
+﻿<body style="margin:0px 0px 0px 0px;">
+<button onclick="fill()" style="position:fixed;">fill</button>
+<iframe id="en" src="ES5en.html" style="border:none;" width=800>
+</iframe>
+<br/>
+<div id="hidden" style="display:none;" ></div>
+
+
+<script>
+window.onload = function(){
+    document.querySelector("#en").height = document.querySelector("#en").contentWindow.document.documentElement.scrollHeight ;
+    var blocks = Array.prototype.filter.call(document.querySelector("#en").contentWindow.document.querySelectorAll("section>*"),function(e){ return e.tagName != "SECTION"});
+    var cnblocks = [];
+    blocks.forEach(function(e){
+        var rect = e.getClientRects()[0];
+        var block = document.createElement("div");
+        block.style.position = "absolute";
+        block.style.top = rect.top +"px";
+        block.style.left = "800px";
+        block.style.width = "800px";
+        block.style.height = (rect.bottom-rect.top)+"px";
+        block.style.outline = "solid 1px green";
+        document.body.appendChild(block);
+        cnblocks.push(block);
+        //document.querySelector("#src").value = document.querySelector("#cn").contentWindow.document.body.innerHTML
+    })
+    window.fill = function fill(){
+        var xhr = new XMLHttpRequest();
+        xhr.open("get","./ES5cn.html",false);
+        xhr.send(null);
+        document.querySelector("#hidden").innerHTML = xhr.responseText;
+        for(var i = 0;i<document.querySelector("#hidden").children.length;i++) {
+            cnblocks[i].innerHTML = document.querySelector("#hidden").children[i].outerHTML;
+        }
+    }
+    
+}
+</script>
